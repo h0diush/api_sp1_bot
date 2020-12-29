@@ -18,7 +18,7 @@ def parse_homework_status(homework):
     homework_name = homework.get('homework_name')
     if homework.get('status') == 'rejected':
         verdict = 'К сожалению в работе нашлись ошибки.'
-        
+
     else:
         verdict = 'Ревьюеру всё понравилось, можно приступать к следующему уроку.'
     return f'У вас проверили работу "{homework_name}"!\n\n{verdict}'
@@ -32,26 +32,28 @@ def get_homework_statuses(current_timestamp):
         return homework_statuses.json()
     except requests.exceptions.HTTPError as e:
         logging.error(e, exc_info=True)
-    
 
 
-
-def send_message(message, bot_client):    
+def send_message(message, bot_client):
     return bot_client.send_message(CHAT_ID, message)
 
 
 def main():
     bot_client = telegram.Bot(token=TELEGRAM_TOKEN)
     # проинициализировать бота здесь
-    current_timestamp = int(time.time()) # начальное значение timestamp
+    current_timestamp = int(time.time())  # начальное значение timestamp
 
     while True:
         try:
             new_homework = get_homework_statuses(current_timestamp)
             if new_homework.get('homeworks'):
-                send_message(parse_homework_status(new_homework.get('homeworks')[0]), bot_client)
+                send_message(
+                    parse_homework_status(
+                        new_homework.get('homeworks')[0]),
+                    bot_client)
                 logging.info('Сообщение отправлено')
-            current_timestamp = new_homework.get('current_date', current_timestamp)  # обновить timestamp
+            current_timestamp = new_homework.get(
+                'current_date', current_timestamp)  # обновить timestamp
             time.sleep(300)  # опрашивать раз в пять минут
 
         except Exception as e:
