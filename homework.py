@@ -41,7 +41,7 @@ def send_message(message, bot_client):
 def main():
     bot_client = telegram.Bot(token=TELEGRAM_TOKEN)
     # проинициализировать бота здесь
-    current_timestamp = 0  # начальное значение timestamp
+    current_timestamp = int(time.time())  # начальное значение timestamp
 
     while True:
         try:
